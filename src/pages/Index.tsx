@@ -2,10 +2,13 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Icon from '@/components/ui/icon';
 
 const Index = () => {
   const [selectedService, setSelectedService] = useState<string | null>(null);
+  const [openModal, setOpenModal] = useState<string | null>(null);
 
   const services = [
     {
@@ -14,7 +17,13 @@ const Index = () => {
       description: 'Диагностика и устранение неисправностей любой сложности',
       icon: 'Monitor',
       price: 'от 500₽',
-      popular: true
+      popular: true,
+      details: {
+        fullDescription: 'Профессиональная диагностика и ремонт настольных компьютеров и ноутбуков. Устраняем неисправности материнских плат, блоков питания, видеокарт и других компонентов.',
+        includes: ['Полная диагностика системы', 'Замена неисправных компонентов', 'Тестирование после ремонта', 'Гарантия 3 месяца'],
+        duration: '1-3 дня',
+        examples: ['Замена материнской платы', 'Ремонт блока питания', 'Восстановление после залития']
+      }
     },
     {
       id: 'upgrade',
@@ -22,7 +31,13 @@ const Index = () => {
       description: 'Увеличение производительности и замена комплектующих',
       icon: 'Cpu',
       price: 'от 1000₽',
-      popular: false
+      popular: false,
+      details: {
+        fullDescription: 'Повышение производительности вашего компьютера путем замены и установки новых комплектующих. Подберем оптимальную конфигурацию под ваши задачи.',
+        includes: ['Анализ текущей конфигурации', 'Подбор совместимых компонентов', 'Установка и настройка', 'Тестирование стабильности'],
+        duration: '1-2 дня',
+        examples: ['Увеличение объема ОЗУ', 'Установка SSD диска', 'Замена видеокарты']
+      }
     },
     {
       id: 'cleaning',
@@ -30,7 +45,13 @@ const Index = () => {
       description: 'Полная очистка системы от вредоносного ПО',
       icon: 'Shield',
       price: 'от 800₽',
-      popular: true
+      popular: true,
+      details: {
+        fullDescription: 'Комплексная очистка компьютера от вирусов, троянов, рекламного ПО и других угроз. Установка надежной антивирусной защиты.',
+        includes: ['Глубокое сканирование системы', 'Удаление всех угроз', 'Восстановление поврежденных файлов', 'Установка антивируса'],
+        duration: '2-4 часа',
+        examples: ['Удаление рекламных баннеров', 'Очистка от криптолокеров', 'Восстановление браузеров']
+      }
     },
     {
       id: 'recovery',
@@ -38,7 +59,13 @@ const Index = () => {
       description: 'Восстановление утерянных файлов и документов',
       icon: 'HardDrive',
       price: 'от 1500₽',
-      popular: false
+      popular: false,
+      details: {
+        fullDescription: 'Восстановление данных с поврежденных жестких дисков, флешек и других носителей. Используем профессиональное оборудование.',
+        includes: ['Диагностика носителя', 'Восстановление файлов', 'Проверка целостности данных', 'Копирование на новый носитель'],
+        duration: '1-7 дней',
+        examples: ['Восстановление после форматирования', 'Данные с поврежденного HDD', 'Файлы с нерабочей флешки']
+      }
     },
     {
       id: 'installation',
@@ -46,7 +73,13 @@ const Index = () => {
       description: 'Установка операционных систем и программ',
       icon: 'Download',
       price: 'от 700₽',
-      popular: true
+      popular: true,
+      details: {
+        fullDescription: 'Профессиональная установка операционных систем, драйверов и необходимого программного обеспечения с последующей настройкой.',
+        includes: ['Установка ОС с нуля', 'Установка всех драйверов', 'Настройка системы', 'Установка необходимых программ'],
+        duration: '2-4 часа',
+        examples: ['Установка Windows 11', 'Настройка Office 365', 'Установка Adobe Creative Suite']
+      }
     },
     {
       id: 'support',
@@ -54,7 +87,13 @@ const Index = () => {
       description: 'Консультации и удаленная помощь 24/7',
       icon: 'Headphones',
       price: 'от 300₽',
-      popular: false
+      popular: false,
+      details: {
+        fullDescription: 'Круглосуточная техническая поддержка по телефону и удаленному доступу. Решаем вопросы любой сложности в режиме реального времени.',
+        includes: ['Консультации по телефону', 'Удаленное подключение', 'Решение проблем онлайн', 'Обучение работе с ПК'],
+        duration: '15 мин - 2 часа',
+        examples: ['Настройка Wi-Fi', 'Помощь с программами', 'Консультация по покупке']
+      }
     }
   ];
 
@@ -165,7 +204,7 @@ const Index = () => {
                 key={service.id} 
                 className={`hover:shadow-lg transition-all duration-300 cursor-pointer transform hover:-translate-y-1 animate-fade-in ${selectedService === service.id ? 'ring-2 ring-tech-blue' : ''}`}
                 style={{ animationDelay: `${index * 0.1}s` }}
-                onClick={() => setSelectedService(service.id === selectedService ? null : service.id)}
+                onClick={() => setOpenModal(service.id)}
               >
                 <CardHeader className="text-center">
                   {service.popular && (
@@ -390,6 +429,240 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {/* Service Modals */}
+      {services.map((service) => (
+        <Dialog key={service.id} open={openModal === service.id} onOpenChange={(open) => !open && setOpenModal(null)}>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <div className="flex items-center space-x-4 mb-4">
+                <div className="w-16 h-16 bg-tech-blue/10 rounded-full flex items-center justify-center">
+                  <Icon name={service.icon as any} size={32} className="text-tech-blue" />
+                </div>
+                <div>
+                  <DialogTitle className="text-2xl text-tech-dark">{service.title}</DialogTitle>
+                  <DialogDescription className="text-lg text-tech-gray mt-1">
+                    {service.description}
+                  </DialogDescription>
+                </div>
+              </div>
+            </DialogHeader>
+            
+            <Tabs defaultValue="details" className="w-full">
+              <TabsList className="grid w-full grid-cols-3">
+                <TabsTrigger value="details">Подробности</TabsTrigger>
+                <TabsTrigger value="examples">Примеры работ</TabsTrigger>
+                <TabsTrigger value="order">Заказать</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="details" className="space-y-6 mt-6">
+                <div>
+                  <h4 className="text-xl font-semibold text-tech-dark mb-3">Описание услуги</h4>
+                  <p className="text-tech-gray leading-relaxed">
+                    {service.details.fullDescription}
+                  </p>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center space-x-2">
+                        <Icon name="CheckCircle" size={20} className="text-green-500" />
+                        <span>Что входит в услугу</span>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <ul className="space-y-2">
+                        {service.details.includes.map((item, index) => (
+                          <li key={index} className="flex items-start space-x-2">
+                            <Icon name="Check" size={16} className="text-tech-blue mt-0.5 flex-shrink-0" />
+                            <span className="text-tech-gray">{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </CardContent>
+                  </Card>
+                  
+                  <div className="space-y-6">
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="flex items-center space-x-2">
+                          <Icon name="Clock" size={20} className="text-tech-blue" />
+                          <span>Время выполнения</span>
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-2xl font-bold text-tech-blue">{service.details.duration}</p>
+                      </CardContent>
+                    </Card>
+                    
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="flex items-center space-x-2">
+                          <Icon name="DollarSign" size={20} className="text-green-500" />
+                          <span>Стоимость</span>
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-3xl font-bold text-tech-blue">{service.price}</p>
+                        <p className="text-tech-gray text-sm mt-1">Точная стоимость после диагностики</p>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
+              </TabsContent>
+              
+              <TabsContent value="examples" className="mt-6">
+                <div>
+                  <h4 className="text-xl font-semibold text-tech-dark mb-4">Примеры наших работ</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {service.details.examples.map((example, index) => (
+                      <Card key={index} className="hover:shadow-md transition-shadow">
+                        <CardHeader>
+                          <div className="w-12 h-12 bg-tech-blue/10 rounded-full flex items-center justify-center mb-3">
+                            <Icon name="Wrench" size={20} className="text-tech-blue" />
+                          </div>
+                          <CardTitle className="text-lg">{example}</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <Badge variant="outline" className="text-green-600 border-green-200">
+                            Выполнено
+                          </Badge>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                  
+                  <div className="mt-8 p-6 bg-tech-blue/5 rounded-lg">
+                    <div className="flex items-start space-x-4">
+                      <Icon name="Info" size={24} className="text-tech-blue mt-1 flex-shrink-0" />
+                      <div>
+                        <h5 className="font-semibold text-tech-dark mb-2">Гарантия качества</h5>
+                        <p className="text-tech-gray">
+                          На все выполненные работы предоставляется гарантия 3 месяца. 
+                          Если в течение этого времени возникнут проблемы, связанные с нашей работой, 
+                          мы устраним их бесплатно.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </TabsContent>
+              
+              <TabsContent value="order" className="mt-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  <div>
+                    <h4 className="text-xl font-semibold text-tech-dark mb-4">Заказать услугу</h4>
+                    <Card>
+                      <CardContent className="p-6 space-y-4">
+                        <div>
+                          <label className="block text-sm font-medium text-tech-dark mb-2">Имя *</label>
+                          <input 
+                            type="text" 
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-tech-blue focus:border-transparent"
+                            placeholder="Ваше имя"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-tech-dark mb-2">Телефон *</label>
+                          <input 
+                            type="tel" 
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-tech-blue focus:border-transparent"
+                            placeholder="+7 (___) ___-__-__"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-tech-dark mb-2">Email</label>
+                          <input 
+                            type="email" 
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-tech-blue focus:border-transparent"
+                            placeholder="example@mail.ru"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-tech-dark mb-2">Описание проблемы</label>
+                          <textarea 
+                            rows={4}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-tech-blue focus:border-transparent"
+                            placeholder={`Опишите подробно проблему для услуги "${service.title}"`}
+                          />
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <input type="checkbox" id="urgent" className="rounded border-gray-300" />
+                          <label htmlFor="urgent" className="text-sm text-tech-gray">
+                            Срочный заказ (+50% к стоимости)
+                          </label>
+                        </div>
+                        <Button className="w-full bg-tech-blue hover:bg-blue-700 py-3">
+                          <Icon name="Send" size={20} className="mr-2" />
+                          Отправить заявку
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </div>
+                  
+                  <div>
+                    <h4 className="text-xl font-semibold text-tech-dark mb-4">Информация о заказе</h4>
+                    <div className="space-y-4">
+                      <Card>
+                        <CardHeader>
+                          <CardTitle className="text-lg">{service.title}</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="space-y-3">
+                            <div className="flex justify-between">
+                              <span className="text-tech-gray">Базовая стоимость:</span>
+                              <span className="font-semibold text-tech-blue">{service.price}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-tech-gray">Время выполнения:</span>
+                              <span className="font-semibold">{service.details.duration}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-tech-gray">Гарантия:</span>
+                              <span className="font-semibold">3 месяца</span>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                      
+                      <Card className="bg-tech-blue/5">
+                        <CardContent className="p-4">
+                          <div className="flex items-start space-x-3">
+                            <Icon name="Truck" size={20} className="text-tech-blue mt-1" />
+                            <div>
+                              <h6 className="font-semibold text-tech-dark">Выезд на дом</h6>
+                              <p className="text-sm text-tech-gray">
+                                Бесплатный выезд мастера в пределах Твери. 
+                                Диагностика - 500₽ (засчитывается при ремонте).
+                              </p>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                      
+                      <Card className="bg-green-50">
+                        <CardContent className="p-4">
+                          <div className="flex items-start space-x-3">
+                            <Icon name="Shield" size={20} className="text-green-600 mt-1" />
+                            <div>
+                              <h6 className="font-semibold text-tech-dark">Гарантия качества</h6>
+                              <p className="text-sm text-tech-gray">
+                                3 месяца гарантии на все работы. 
+                                Если что-то пойдет не так - исправим бесплатно.
+                              </p>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </div>
+                </div>
+              </TabsContent>
+            </Tabs>
+          </DialogContent>
+        </Dialog>
+      ))}
 
       {/* Footer */}
       <footer className="bg-tech-dark text-white py-12">
