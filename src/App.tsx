@@ -19,6 +19,17 @@ import DataRecovery from "./pages/DataRecovery";
 import Repair from "./pages/Repair";
 import Upgrade from "./pages/Upgrade";
 import Maintenance from "./pages/Maintenance";
+import Installation from "./pages/Installation";
+import VirusRemoval from "./pages/VirusRemoval";
+import NetworkSetup from "./pages/NetworkSetup";
+import Gaming from "./pages/Gaming";
+import Business from "./pages/Business";
+import Emergency from "./pages/Emergency";
+import Training from "./pages/Training";
+import Consultation from "./pages/Consultation";
+import RemoteSupport from "./pages/RemoteSupport";
+import Warranty from "./pages/Warranty";
+import Accessories from "./pages/Accessories";
 
 const queryClient = new QueryClient();
 
@@ -43,6 +54,17 @@ const App = () => (
           <Route path="/repair" element={<Repair />} />
           <Route path="/upgrade" element={<Upgrade />} />
           <Route path="/maintenance" element={<Maintenance />} />
+          <Route path="/installation" element={<Installation />} />
+          <Route path="/virus-removal" element={<VirusRemoval />} />
+          <Route path="/network-setup" element={<NetworkSetup />} />
+          <Route path="/gaming" element={<Gaming />} />
+          <Route path="/business" element={<Business />} />
+          <Route path="/emergency" element={<Emergency />} />
+          <Route path="/training" element={<Training />} />
+          <Route path="/consultation" element={<Consultation />} />
+          <Route path="/remote-support" element={<RemoteSupport />} />
+          <Route path="/warranty" element={<Warranty />} />
+          <Route path="/accessories" element={<Accessories />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
