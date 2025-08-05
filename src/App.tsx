@@ -14,6 +14,11 @@ import Reviews from "./pages/Reviews";
 import FAQ from "./pages/FAQ";
 import Blog from "./pages/Blog";
 import Portfolio from "./pages/Portfolio";
+import Diagnostics from "./pages/Diagnostics";
+import DataRecovery from "./pages/DataRecovery";
+import Repair from "./pages/Repair";
+import Upgrade from "./pages/Upgrade";
+import Maintenance from "./pages/Maintenance";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +38,11 @@ const App = () => (
           <Route path="/faq" element={<FAQ />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/portfolio" element={<Portfolio />} />
+          <Route path="/diagnostics" element={<Diagnostics />} />
+          <Route path="/data-recovery" element={<DataRecovery />} />
+          <Route path="/repair" element={<Repair />} />
+          <Route path="/upgrade" element={<Upgrade />} />
+          <Route path="/maintenance" element={<Maintenance />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
